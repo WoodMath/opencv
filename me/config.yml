@@ -1,0 +1,9 @@
+%YAML:1.0
+delay: 1
+max_frames: 120
+auto_grab: 1
+width: 800
+height: 600
+image_list: "imagelist.yml"
+zero_padding: 3
+grab_frequency: 1
