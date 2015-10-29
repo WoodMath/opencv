@@ -25,5 +25,5 @@ g++ -g $(pkg-config  --cflags opencv) $CODE.cpp \
 #./calibration.out -w 8 -h 7 -pt chessboard -s 2.25 -o camera_right.yml -op -oe imagelist_right.xml
 
 #./stereo_calib.out -w 9 -h 6 stereo_calib.xml
-./stereo_calib.out -w 7 -h 7 imagelist.yaml
+./stereo_calib.out -w 7 -h 7 imagelist.yml
 

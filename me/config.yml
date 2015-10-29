@@ -1,9 +1,11 @@
 %YAML:1.0
-delay: 1
-max_frames: 120
-auto_grab: 1
-width: 800
-height: 600
+frame_rate: 1
+grab_rate: 1000
+max_frames: 250
+width: 640
+height: 480
 image_list: "imagelist.yml"
 zero_padding: 3
-grab_frequency: 1
+mouse_trigger: 1
+keyboard_trigger: 0
+timer_trigger: 0

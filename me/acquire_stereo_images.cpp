@@ -1,11 +1,48 @@
 #include "opencv2/opencv.hpp"
 #include <stdio.h>
+#include <iostream>
 #include <time.h>
-
+#define TRUE 	(1)
+#define FALSE	(0)
 using namespace cv;
+#define DEBUGd
 
-#define WINDOW_MODE WINDOW_NORMAL
+#ifdef DEBUG
+	#define DEBUG_FN(X)	{std::cout << X ;}
+#else
+	#define DEBUG_FN(X)
+#endif
 
+#define WINDOW_MODE WINDOW_AUTOSIZE
+
+char bTriggerEnabled = FALSE;
+
+void onMouse(int event, int x, int y, int flags, void* userdata){
+	if ( event == EVENT_LBUTTONDOWN ){
+		bTriggerEnabled = TRUE;
+
+		DEBUG_FN("Mouse Button Pressed");
+		DEBUG_FN(std::endl);
+
+		return;
+	}else if  ( event == EVENT_RBUTTONDOWN ) {
+		bTriggerEnabled = TRUE;
+
+		DEBUG_FN("Mouse Button Pressed");
+		DEBUG_FN(std::endl);
+
+		return;
+	}else if  ( event == EVENT_MBUTTONDOWN ) {
+		bTriggerEnabled = TRUE;
+
+		DEBUG_FN("Mouse Button Pressed");
+		DEBUG_FN(std::endl);
+
+		return;
+	}else if ( event == EVENT_MOUSEMOVE ){
+
+	}
+}
 
 int main(int argc, char* argv[]){
 
@@ -16,24 +53,37 @@ int main(int argc, char* argv[]){
 
 	string sFileName = "config.yml";
 	string sImageList;
-	FileStorage fsr(sFileName, FileStorage::READ);
+	if(argc <= 1){
+		std::cout << "Usage is: " << std::endl;
+		std::cout << "\t " << argv[0] << " configfile.yml " << std::endl;
+		exit(0);
+
+	}
+	FileStorage fsr(argv[1], FileStorage::READ);
+	if(!fsr.isOpened()){
+		std::cout << "Could not find file " << argv[1] << std::endl;
+		exit(0);
+	}
 
 
-
-	int iDelay, iMaxFrames;
-	unsigned int iWidth, iHeight;
+	int iFrameRate, iMaxFrames;
 	unsigned long ulCount = 0;
 	unsigned long ulMaxFrames;
-	int iGrabFrequency;
+	int iGrabRate;
 	int iZeroPadding;
-	int iAutoGrab;
+	int iWidth = 640, iHeight = 480;
+	int iMouseTrigger = 0, iKeyboardTrigger = 0, iTimerTrigger = 0;
 
-	fsr["delay"] >> iDelay;
+	fsr["frame_rate"] >> iFrameRate;		//	Number of Milliseconds between frames
+	fsr["grab_rate"] >> iGrabRate;			//	Number of Milliseconds between grabs
 	fsr["max_frames"] >> iMaxFrames;
 	fsr["image_list"] >> sImageList;
-	fsr["auto_grab"] >> iAutoGrab;
 	fsr["zero_padding"] >> iZeroPadding;
-	fsr["grab_frequency"] >> iGrabFrequency;
+	fsr["width"] >> iWidth;
+	fsr["height"] >> iHeight;
+	fsr["mouse_trigger"] >> iMouseTrigger;
+	fsr["keyboard_trigger"] >> iKeyboardTrigger;
+	fsr["timer_trigger"] >> iTimerTrigger;
 
 
 	ulMaxFrames = (unsigned long)(iMaxFrames);
@@ -57,14 +107,15 @@ int main(int argc, char* argv[]){
 		return -1;
 
 
-/*
-	camLeft.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
-	camLeft.set(CV_CAP_PROP_FRAME_HEIGHT, 960);
-	camRight.set(CV_CAP_PROP_FRAME_WIDTH, 1280);
-	camRight.set(CV_CAP_PROP_FRAME_HEIGHT, 960);
-*/
+///*
+	camLeft.set(CV_CAP_PROP_FRAME_WIDTH, iWidth);
+	camLeft.set(CV_CAP_PROP_FRAME_HEIGHT, iHeight);
+	camRight.set(CV_CAP_PROP_FRAME_WIDTH, iWidth);
+	camRight.set(CV_CAP_PROP_FRAME_HEIGHT, iHeight);
+//*/
 	Mat matLeft;
 	Mat matRight;
+
 
 	vector<int> compression_params;
 //	compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
@@ -73,11 +124,26 @@ int main(int argc, char* argv[]){
 	namedWindow("Left",  WINDOW_MODE);
 	namedWindow("Right",  WINDOW_MODE);
 
+	if(iMouseTrigger){
+		DEBUG_FN("Mouse Trigger Enabled");
+		DEBUG_FN(std::endl);
+		setMouseCallback("Left", onMouse, NULL);
+		setMouseCallback("Right", onMouse, NULL);
+	}
+	if(iKeyboardTrigger){
+		DEBUG_FN("Keyboard Trigger Enabled");
+		DEBUG_FN(std::endl);
+	}
+	if(iTimerTrigger){
+		DEBUG_FN("Timer Trigger Enabled");
+		DEBUG_FN(std::endl);
+	}
+
 	char cLeft[256];
 	char cRight[256];
 
 	clock_t iClockStart = clock(), iClockDiff;
-	unsigned int iSec;
+	unsigned int iMSec;
 
 
 	while(1){
@@ -91,21 +157,22 @@ int main(int argc, char* argv[]){
 
 
 
-		iKey = waitKey(iDelay);
+		iKey = waitKey(iFrameRate);
 
 		iClockDiff = clock() - iClockStart;
-		iSec = iClockDiff / CLOCKS_PER_SEC;
-
-
+		iMSec = 1000 * iClockDiff / CLOCKS_PER_SEC;
 
 		if(iKey > -1) 
 			printf(" iKey = %d \n", iKey);
+		if(iKeyboardTrigger && iKey == 32)	// Test for spacebar if keyboard enabled
+			bTriggerEnabled = TRUE;
+		if(iTimerTrigger && iMSec >= iGrabRate)
+			bTriggerEnabled = TRUE;
 
-
-		if(iKey == 32 || (iAutoGrab && iSec >= iGrabFrequency)){
+		if(bTriggerEnabled){
 			// save images using space bar
-			sprintf(cLeft,"./calib_images/left_%0*lu.png", iZeroPadding, ulCount);
-			sprintf(cRight,"./calib_images/right_%0*lu.png", iZeroPadding, ulCount);
+			sprintf(cLeft,"./calib_images/image_%0*lu_left.png", iZeroPadding, ulCount);
+			sprintf(cRight,"./calib_images/image_%0*lu_right.png", iZeroPadding, ulCount);
 
 			fsw << string(cLeft);
 			fsw << string(cRight);
@@ -118,6 +185,8 @@ int main(int argc, char* argv[]){
 
 			iClockStart = clock();
 
+			bTriggerEnabled = FALSE;
+	
 
 		}
 
@@ -132,6 +201,9 @@ int main(int argc, char* argv[]){
 
 	fsw << "]";
 	fsw.release();
+	destroyWindow("Left");
+	destroyWindow("Right");
+	destroyAllWindows();
 
 	return 0;
 }
