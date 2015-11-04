@@ -66,7 +66,7 @@ int main(int argc, char* argv[]){
 	}
 
 
-	int iFrameRate, iMaxFrames;
+	int iFrameRate, iMaxFrames, iFrameStart;
 	unsigned long ulCount = 0;
 	unsigned long ulMaxFrames;
 	int iGrabRate;
@@ -74,6 +74,7 @@ int main(int argc, char* argv[]){
 	int iWidth = 640, iHeight = 480;
 	int iMouseTrigger = 0, iKeyboardTrigger = 0, iTimerTrigger = 0;
 
+	fsr["frame_start"] >> iFrameStart;		//	Number of first frame to write
 	fsr["frame_rate"] >> iFrameRate;		//	Number of Milliseconds between frames
 	fsr["grab_rate"] >> iGrabRate;			//	Number of Milliseconds between grabs
 	fsr["max_frames"] >> iMaxFrames;
@@ -86,7 +87,9 @@ int main(int argc, char* argv[]){
 	fsr["timer_trigger"] >> iTimerTrigger;
 
 
+	ulCount = (unsigned long)(iFrameStart);
 	ulMaxFrames = (unsigned long)(iMaxFrames);
+
 
 	fsr.release();
 
