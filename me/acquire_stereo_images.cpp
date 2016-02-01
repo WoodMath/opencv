@@ -53,6 +53,7 @@ int main(int argc, char* argv[]){
 
 	string sFileName = "config.yml";
 	string sImageList;
+	string sImageName;
 	if(argc <= 1){
 		std::cout << "Usage is: " << std::endl;
 		std::cout << "\t " << argv[0] << " configfile.yml " << std::endl;
@@ -67,8 +68,6 @@ int main(int argc, char* argv[]){
 
 
 	int iFrameRate, iMaxFrames, iFrameStart;
-	unsigned long ulCount = 0;
-	unsigned long ulMaxFrames;
 	int iGrabRate;
 	int iZeroPadding;
 	int iWidth = 640, iHeight = 480;
@@ -79,6 +78,7 @@ int main(int argc, char* argv[]){
 	fsr["grab_rate"] >> iGrabRate;			//	Number of Milliseconds between grabs
 	fsr["max_frames"] >> iMaxFrames;
 	fsr["image_list"] >> sImageList;
+	fsr["image_name"] >> sImageName;
 	fsr["zero_padding"] >> iZeroPadding;
 	fsr["width"] >> iWidth;
 	fsr["height"] >> iHeight;
@@ -86,9 +86,10 @@ int main(int argc, char* argv[]){
 	fsr["keyboard_trigger"] >> iKeyboardTrigger;
 	fsr["timer_trigger"] >> iTimerTrigger;
 
-
-	ulCount = (unsigned long)(iFrameStart);
-	ulMaxFrames = (unsigned long)(iMaxFrames);
+	unsigned long ulCount = (unsigned long)(iFrameStart);
+	unsigned long ulFrameStart = (unsigned long)(iFrameStart);
+	unsigned long ulMaxFrames = (unsigned long)(iMaxFrames);
+	
 
 
 	fsr.release();
@@ -172,15 +173,33 @@ int main(int argc, char* argv[]){
 		if(iTimerTrigger && iMSec >= iGrabRate)
 			bTriggerEnabled = TRUE;
 
+
+		if((ulCount - ulFrameStart + 1) > ulMaxFrames)
+			break;
+
 		if(bTriggerEnabled){
 			// save images using space bar
-			sprintf(cLeft,"./calib_images/image_%0*lu_left.png", iZeroPadding, ulCount);
-			sprintf(cRight,"./calib_images/image_%0*lu_right.png", iZeroPadding, ulCount);
+	
+			sprintf(cLeft, sImageName.c_str(), "Left", iZeroPadding, ulCount);
+			sprintf(cRight, sImageName.c_str(), "Right", iZeroPadding, ulCount);
 
-			fsw << string(cLeft);
-			fsw << string(cRight);
+			DEBUG_FN(" *(sImageName.c_str()) = ");
+			DEBUG_FN(sImageName.c_str());
+			DEBUG_FN(std::endl);
 
-			printf("\t Saving frames %s and %s (%0*lu of %0*lu) .\n", cLeft, cRight, iZeroPadding, ulCount+1, iZeroPadding, ulMaxFrames);
+			DEBUG_FN(" Writing Left Image File ");
+			DEBUG_FN(cLeft);
+			DEBUG_FN(std::endl);
+			DEBUG_FN(" Writing Right Image File ");
+			DEBUG_FN(cRight);
+			DEBUG_FN(std::endl);
+
+			fsw << cLeft;
+			fsw << cRight;
+
+			printf("\t Saving frames %s and %s (%0*lu of %0*lu) .\n", 
+				cLeft, cRight, iZeroPadding, 
+				ulCount-ulFrameStart+1, iZeroPadding, ulMaxFrames);
 
 			imwrite(cLeft,matLeft,compression_params);
 			imwrite(cRight,matRight,compression_params);
@@ -195,8 +214,6 @@ int main(int argc, char* argv[]){
 
 
 		if(iKey == 27 || iKey == 113)		// ESC or Q is hit
-			break;
-		if(ulCount >= ulMaxFrames)
 			break;
 
 

@@ -15,10 +15,10 @@
 #		http://www.cyberciti.biz/tips/how-to-generating-print-range-sequence-of-numbers.html
 #		http://www.imagemagick.org/script/convert.php
 
-LIST=$(seq -f "%03g" 0 24)
+LIST=$(seq -f "%03g" 1 26)
 EXT_OLD="png"
 EXT_NEW="bmp"
-SIDE="left"
+SIDE="right"
 for NUMBER in $LIST
 do
 	OLD="${SIDE}_${NUMBER}.${EXT_OLD}"

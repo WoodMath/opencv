@@ -2,10 +2,11 @@
 frame_start: 1
 frame_rate: 1
 grab_rate: 1000
-max_frames: 250
+max_frames: 5
 width: 640
 height: 480
 image_list: "imagelist.yml"
+image_name: "./calib_images_v3/image_%s_%0*lu.pnm"
 zero_padding: 3
 mouse_trigger: 1
 keyboard_trigger: 0

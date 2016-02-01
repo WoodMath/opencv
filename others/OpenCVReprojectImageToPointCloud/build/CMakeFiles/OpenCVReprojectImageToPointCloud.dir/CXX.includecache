@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/jeff/Dropbox/Wood_Kamangar/cse5393/opencv/OpenCVReprojectImageToPointCloud/opencv_reproject_image_pcl.cpp
+/home/jeff/Dropbox/Wood_Kamangar/cse5393/opencv/others/OpenCVReprojectImageToPointCloud/opencv_reproject_image_pcl.cpp
 cv.h
 -
 highgui.h

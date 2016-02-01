@@ -1,0 +1,12 @@
+%YAML:1.0
+imagelist:
+   - "./calib_images_v3/image_Left_001.pnm"
+   - "./calib_images_v3/image_Right_001.pnm"
+   - "./calib_images_v3/image_Left_002.pnm"
+   - "./calib_images_v3/image_Right_002.pnm"
+   - "./calib_images_v3/image_Left_003.pnm"
+   - "./calib_images_v3/image_Right_003.pnm"
+   - "./calib_images_v3/image_Left_004.pnm"
+   - "./calib_images_v3/image_Right_004.pnm"
+   - "./calib_images_v3/image_Left_005.pnm"
+   - "./calib_images_v3/image_Right_005.pnm"
