@@ -1,4 +1,4 @@
-http://blog.martinperis.com/2011/11/opencv-stereo-webcam.html
-http://blog.martinperis.com/2011/01/opencv-stereo-camera-calibration.html
-http://blog.martinperis.com/2011/08/opencv-stereo-matching.html
-http://blog.martinperis.com/2012/01/3d-reconstruction-with-opencv-and-point.html
+http://martinperis.blogspot.com/2011/11/opencv-stereo-webcam.html
+http://martinperis.blogspot.com/2011/01/opencv-stereo-camera-calibration.html
+http://martinperis.blogspot.com/2011/08/opencv-stereo-matching.html
+http://martinperis.blogspot.com/2012/01/3d-reconstruction-with-opencv-and-point.html
