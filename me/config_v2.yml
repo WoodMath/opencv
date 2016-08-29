@@ -1,0 +1,15 @@
+%YAML:1.0
+frame_start: 1
+frame_rate: 1
+grab_rate: 1000
+max_frames: 5
+save_width: 640
+save_height: 480
+preview_width: 320
+preview_height: 240
+image_list: "imagelist_v2.yml"
+image_name: "./calib_images_v4/image_%s_%0*lu.pnm"
+zero_padding: 3
+mouse_trigger: 1
+keyboard_trigger: 0
+timer_trigger: 0
