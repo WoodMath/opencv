@@ -3,6 +3,7 @@
 #define _CAMERAS_
 
 #include "camera.hpp"
+#include "display.hpp"
 
 class Cameras{
 public:
@@ -15,12 +16,22 @@ public:
 	void save();
 	void stop();
 
-	void addCamera(Camera* camAdd);
+	void setDirectory(std::string sDirectory);
+	void setFrameRate(unsigned int iFrameRate);
+
+	void addCamera(Camera &camAdd);
+	void printDebug();
 
 private:
 	int iCameraCount;
+	Camera **camCameras;
+	unsigned int iFrameRate;
+	Display disp;
 
 	cv::Mat matCountdown;
+	void init();
+
+
 };
 
 #endif

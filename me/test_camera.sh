@@ -15,11 +15,9 @@ echo
 #g++ DisplayImage.cpp -o DisplayImage.out `pkg-config --cflags --libs opencv`
 CODE="test_camera"
 CAMERA="camera"
-CAMERAS="cameras"
 #g++ -g $(pkg-config --cflags opencv) -c $CALLBACKS.cpp $(pkg-config --libs opencv)
 g++ -c $CAMERA.cpp
-g++ -c $CAMERAS.cpp
-g++ -g $(pkg-config --cflags opencv) $CAMERA.o $CAMERAS.o $CODE.cpp \
+g++ -g $(pkg-config --cflags opencv) $CAMERA.o $CODE.cpp \
      $(pkg-config --libs opencv) -o $CODE.out
 
 #done

@@ -22,8 +22,10 @@
 
 #define FRAME_RATE (10)
 #define SAVE_RATE (10)
-#define WINDOW_MODE cv::WINDOW_AUTOSIZE
 
+#ifndef WINDOW_MODE
+#define WINDOW_MODE cv::WINDOW_AUTOSIZE
+#endif
 
 
 
@@ -46,6 +48,7 @@ public:
 
 
 private:
+	void init();
 	std::string sDescription;
 	cv::Mat matDisplay;
 
@@ -55,6 +58,16 @@ private:
 	int iWindowY;
 	
 	bool bActive;
+
+
+	int iFontFace;
+	double dFontScale;
+	int iThickness;
+	int iBaseline;
+	cv::Size szTextSize;
+	cv::Point ptTextOrg;
+
+
 };
 
 #endif

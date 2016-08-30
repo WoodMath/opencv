@@ -18,11 +18,13 @@
 
 #define FRAME_RATE (10)
 #define SAVE_RATE (10)
-#define WINDOW_MODE cv::WINDOW_AUTOSIZE
-
+#ifndef WINDOW_MODE
+#define WINDOW_MODE (cv::WINDOW_AUTOSIZE)
+//#define WINDOW_MODE (0)
+#endif
 
 #define _CAMERA_
-
+//#define SINGLE_VC
 
 class Camera{
 
@@ -41,8 +43,12 @@ public:
 	void display();
 	void save();
 	void stop();
-
+	void setFrameRate(unsigned int iFrameRate);
+	void printDebug();
+	bool isActive();
 private:
+	void init();
+
 	int iSource;
 	int iPreviewWidth;
 	int iPreviewHeight;
@@ -55,14 +61,16 @@ private:
 	std::string sDescription;
 	std::string sDirectory;
 
-
 	char cFileName[256];
+	unsigned int iFrameRate;
 
-
+#ifndef SINGLE_VC
 	cv::VideoCapture camPreview;
+#endif
 	cv::VideoCapture camSave;
-
+#ifndef SINGLE_VC
 	cv::Mat matPreview;
+#endif
 	cv::Mat matSave;
 
 	std::vector<int> compression_params;
