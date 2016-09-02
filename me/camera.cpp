@@ -87,6 +87,8 @@ void Camera::setDirectory(std::string sDirectory){
 		sDirectory.append(sSlash);
 
 	Camera::sDirectory = sDirectory;
+
+	mkpath(sDirectory, 0755);
 	// Still need to add code to make directory if does not exist
 	
 };
@@ -260,6 +262,16 @@ void Camera::stop(){
 void Camera::setFrameRate(unsigned int iFrameRate){
 
 	Camera::iFrameRate = iFrameRate;
+};
+
+char* Camera::getFileName(){
+	
+	return Camera::cFileName;
+};
+
+std::string Camera::getDescription(){
+
+	return Camera::sDescription;
 };
 
 void Camera::printDebug(){

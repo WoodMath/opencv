@@ -2,9 +2,13 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <stdio.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "opencv2/opencv.hpp"
+#include "mkpath.hpp"
 
 #define DEBUG
 
@@ -44,6 +48,9 @@ public:
 	void save();
 	void stop();
 	void setFrameRate(unsigned int iFrameRate);
+	char* getFileName();
+	std::string getDescription();
+
 	void printDebug();
 	bool isActive();
 private:

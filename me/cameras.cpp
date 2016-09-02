@@ -15,21 +15,33 @@ void Cameras::init(){
 	Cameras::iCameraCount = 0;
 	Cameras::iFrameRate = 600;
 	Cameras::disp.setWindowPosition(640,0);
-
+	Cameras::setFileList("list.txt");
+	Cameras::setDirectory("./");
+	Cameras::bActive = false;
 };
 
 void Cameras::start(){
 
+	Cameras::bActive = true;
 	Cameras::disp.start();
 	for(int iInc=0; iInc < Cameras::iCameraCount; iInc++){
 //		DEBUG_FN(" iInc = " << iInc)
 		(Cameras::camCameras[iInc])->start();
 	}
+	
+	std::string sFull = Cameras::sDirectory;
+	sFull.append(Cameras::sFileList);
+	Cameras::sFullPathFileList = sFull;
+	Cameras::fFileList.open((Cameras::sFullPathFileList).c_str());
+
+	DEBUG_FN(" Cameras::sFullPathFileList = " << Cameras::sFullPathFileList)
 
 };
 
 void Cameras::wait(){
 
+	if(!Cameras::bActive)
+		return;
 
 	for(int iInc = 0; iInc < Cameras::iCameraCount; iInc++)
 		if(!(Cameras::camCameras[iInc]->isActive()))
@@ -107,6 +119,9 @@ void Cameras::wait(){
 
 void Cameras::display(){
 
+	if(!Cameras::bActive)
+		return;
+
 	for(int iInc=0; iInc < Cameras::iCameraCount; iInc++){
 //		DEBUG_FN(" iInc = " << iInc)
 		(Cameras::camCameras[iInc])->display();
@@ -116,30 +131,76 @@ void Cameras::display(){
 
 void Cameras::save(){
 
+	if(!Cameras::bActive)
+		return;
+
 	for(int iInc=0; iInc < Cameras::iCameraCount; iInc++){
 //		DEBUG_FN(" iInc = " << iInc)
 		(Cameras::camCameras[iInc])->save();
+		Cameras::fFileList << ((Cameras::camCameras[iInc])->getFileName()) << std::endl;
+
 	}
 
 };
 
 void Cameras::stop(){
+
+	if(!Cameras::bActive)
+		return;
+
 	Cameras::disp.stop();
 	for(int iInc=0; iInc < Cameras::iCameraCount; iInc++){
 //		DEBUG_FN(" iInc = " << iInc)
 		(Cameras::camCameras[iInc])->stop();
 	}
+	Cameras::fFileList.close();
 
+	Cameras::bActive = false;
 };
-
 
 void Cameras::setDirectory(std::string sDirectory){
 
+	int iStatus;
+
+	int iLen;
+	std::string sLast;
+	std::string sSlash = "/";
+
+	// Check main directory 
+	iLen = sDirectory.length();
+	sLast = &(sDirectory.at(iLen - 1));
+
+	if(sLast != sSlash)
+		sDirectory.append(sSlash);
+
+	
+	Cameras::sDirectory = sDirectory;
+
+	DEBUG_FN(" sDirectory = " << Cameras::sDirectory)
+
+	std::string sDescription, sDescriptionDir;
+	std::string sFull;
+
 	for(int iInc=0; iInc < Cameras::iCameraCount; iInc++){
+		sDescription = (Cameras::camCameras[iInc])->getDescription();
+		sDescriptionDir = sDescription;
+
+		sFull = "./";
+		sFull.append(sDirectory);
+		sFull.append(sDescriptionDir);
+		sFull.append("/");
+		mkpath(sFull,0755);
+	
+//		DEBUG_FN(" sFull = " << sFull << " getenv(\"PWD\") = " << getenv("PWD"));
 //		DEBUG_FN(" iInc = " << iInc)
-		(Cameras::camCameras[iInc])->setDirectory(sDirectory);
+		(Cameras::camCameras[iInc])->setDirectory(sFull);
 	}
 	
+};
+
+void Cameras::setFileList(std::string sFileList){
+
+	Cameras::sFileList = sFileList;
 };
 
 void Cameras::setFrameRate(unsigned int iFrameRate){
